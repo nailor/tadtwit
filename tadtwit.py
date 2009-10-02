@@ -18,8 +18,8 @@
 # configuration directory can be overridden by environmental variable
 # TADTWIT_DIR.
 #
-# Config file is a JSON file in TADTWIT_DIR/config that contains
-# following JSON:
+# State file TADTWIT_DIR/state is created by tadtwit. Config file is a
+# JSON file in TADTWIT_DIR/config that contains following JSON:
 #
 # {
 #   "username": "username",
