@@ -1,8 +1,26 @@
 #!/usr/bin/python
 # This code is public domain and can be freely used.
 #
-# Short introduction:
-# Write a JSON file in ~/.tadtwit.json that contains:
+# This script echoes all replies it has received that are either
+# prefixed or suffixed with @username
+#
+# Requirements:
+# Python 2.5+
+# python-twitter: http://code.google.com/p/python-twitter/
+# simplejson: http://www.undefined.org/python/
+#
+# Short documentation:
+#
+# By default, tadtwit searches configuration files in directory
+# ~/.tadtwit. The program uses two configuration files, a file named
+# *state*, that remembers the tweets already tweeted and config, which
+# contains the essential configuration of the program. The
+# configuration directory can be overridden by environmental variable
+# TADTWIT_DIR.
+#
+# Config file is a JSON file in TADTWIT_DIR/config that contains
+# following JSON:
+#
 # {
 #   "username": "username",
 #   "password": "mypassword",
@@ -11,10 +29,9 @@
 #
 # "users" is a list of users whose tweets are allowed to be echoed
 #
-# ... and run tadtwit.py
+# To run just start the tadtwit.py.
 #
-# This script echoes all replies it has received that are either
-# prefixed or suffixed with @username
+# Protip: You might want to put this program to cron
 
 from __future__ import with_statement
 import os
@@ -24,8 +41,14 @@ try:
 except ImportError:
     import simplejson as json
 
-config_file = os.path.expanduser('~/.tadtwit.json')
-state_file = os.path.expanduser('~/.tadtwit.state')
+
+if 'TADTWIT_DIR' not in os.environ:
+    tadtwit_dir = os.path.expanduser('~/.tadtwit/')
+else:
+    tadtwit_dir = os.environ['TADTWIT_DIR']
+
+config_file = os.path.join(tadtwit_dir, 'config')
+state_file = os.path.join(tadtwit_dir, 'state')
 
 with open(config_file) as f:
     config = simplejson.load(f)
