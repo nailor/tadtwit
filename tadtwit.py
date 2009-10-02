@@ -1,4 +1,21 @@
 #!/usr/bin/python
+# This code is public domain and can be freely used.
+#
+# Short introduction:
+# Write a JSON file in ~/.tadtwit.json that contains:
+# {
+#   "username": "username",
+#   "password": "mypassword",
+#   "users": ["alloweduser1", "alloweduser2"]
+# }
+#
+# "users" is a list of users whose tweets are allowed to be echoed
+#
+# ... and run tadtwit.py
+#
+# This script echoes all replies it has received, that are either
+# prefixed or suffixed with @turkuagileday
+
 from __future__ import with_statement
 import os
 import twitter
