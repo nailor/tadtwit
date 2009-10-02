@@ -30,6 +30,7 @@ try:
     for reply in api.GetReplies():
         if (reply.id in state or
             reply.user.screen_name == username or
+            reply.user.screen_name not in config['users'] or
             not reply.text.startswith('@%s' % username) and
             not reply.text.endswith('@%s' % username)):
 
