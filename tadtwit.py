@@ -13,8 +13,8 @@
 #
 # ... and run tadtwit.py
 #
-# This script echoes all replies it has received, that are either
-# prefixed or suffixed with @turkuagileday
+# This script echoes all replies it has received that are either
+# prefixed or suffixed with @username
 
 from __future__ import with_statement
 import os
