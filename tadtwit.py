@@ -19,7 +19,10 @@
 from __future__ import with_statement
 import os
 import twitter
-import simplejson
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 config_file = os.path.expanduser('~/.tadtwit.json')
 state_file = os.path.expanduser('~/.tadtwit.state')
@@ -36,10 +39,10 @@ username = config['username']
 api = twitter.Api(username=username, password=config['password'])
 
 if not os.path.exists(state_file):
-    state = []
+    state = set()
 else:
     with open(state_file) as f:
-        state = simplejson.load(f)
+        state = set(json.load(f))
 
 username_prefix = len('@%s ' % username)
 
@@ -51,8 +54,7 @@ try:
             not reply.text.startswith('@%s' % username) and
             not reply.text.endswith('@%s' % username)):
 
-            if reply.id not in state:
-                state.append(reply.id)
+            state.add(reply.id)
             continue
 
         suffix = ' from @%s' % reply.user.screen_name
@@ -65,7 +67,7 @@ try:
         if len(msg + suffix) > 140:
             msg = msg[:140-len(suffix)] + '...'
 
-        state.append(reply.id)
+        state.add(reply.id)
 
         msg = msg + suffix
         api.PostUpdate(msg)
@@ -73,4 +75,4 @@ except:
     raise
 finally:
     with open(state_file, 'w') as f:
-        simplejson.dump(state, f)
+        json.dump(list(state), f)
