@@ -25,6 +25,7 @@
 #   "username": "username",
 #   "password": "mypassword",
 #   "users": ["alloweduser1", "alloweduser2"]
+#   "msg_format": "{message} (from @{user})"
 # }
 #
 # "users" is a list of users whose tweets are allowed to be echoed
@@ -58,6 +59,8 @@ if not allowed_users:
     print >> sys.stderr, 'No allowed users listed in %s!' % config_file
     sys.exit(1)
 
+msg_format = config.get('msg_format', '{message} (from @{user})')
+
 username = config['username']
 api = twitter.Api(username=username, password=config['password'])
 
@@ -80,22 +83,19 @@ try:
             state.add(reply.id)
             continue
 
-        suffix = ' from @%s' % reply.user.screen_name
-
         if reply.text.endswith('@%s' % username):
             msg = reply.text[:-username_prefix]
         else:
             msg = reply.text[username_prefix:]
 
-        if len(msg + suffix) > 140:
-            msg = msg[:140-len(suffix)] + '...'
-
+        tweet = msg_format.format(message=msg, user=reply.user.screen_name)
+        if len(tweet) > 140:
+            overrun = len(tweet) - 140
+            tweet = msg_format.format(message=msg[:-overrun - 3] + '...',
+                                      user=reply.user.screen_name)
         state.add(reply.id)
+        api.PostUpdate(tweet)
 
-        msg = msg + suffix
-        api.PostUpdate(msg)
-except:
-    raise
 finally:
     with open(state_file, 'w') as f:
         json.dump(list(state), f)
