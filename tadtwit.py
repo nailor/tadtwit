@@ -94,8 +94,6 @@ try:
 
         msg = msg + suffix
         api.PostUpdate(msg)
-except:
-    raise
 finally:
     with open(state_file, 'w') as f:
         json.dump(list(state), f)
